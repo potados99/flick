@@ -1,24 +1,73 @@
-var process = require('process')
+const process = require('process');
+
 // Handle SIGINT
 process.on('SIGINT', () => {
-  console.info("SIGINT Received, exiting...")
-  process.exit(0)
+    console.info("SIGINT Received, exiting...")
+    process.exit(0)
 })
 
 // Handle SIGTERM
 process.on('SIGTERM', () => {
-  console.info("SIGTERM Received, exiting...")
-  process.exit(0)
+    console.info("SIGTERM Received, exiting...")
+    process.exit(0)
 })
+
+// Handle APP ERRORS
+process.on('uncaughtException', (error, origin) => {
+    console.log('----- Uncaught exception -----')
+    console.log(error)
+    console.log('----- Exception origin -----')
+    console.log(origin)
+})
+process.on('unhandledRejection', (reason, promise) => {
+    console.log('----- Unhandled Rejection at -----')
+    console.log(promise)
+    console.log('----- Reason -----')
+    console.log(reason)
+})
+
+const express = require('express');
+const RateLimit = require('express-rate-limit');
+const http = require('http');
+
+const limiter = RateLimit({
+    windowMs: 5 * 60 * 1000, // 5 minutes
+    max: 100, // Limit each IP to 100 requests per `window` (here, per 5 minutes)
+    message: 'Too many requests from this IP Address, please try again after 5 minutes.',
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(limiter);
+
+// ensure correct client ip and not the ip of the reverse proxy is used for rate limiting on render.com
+// see https://github.com/express-rate-limit/express-rate-limit#troubleshooting-proxy-issues
+app.set('trust proxy', 5);
+
+app.use(express.static('public'));
+
+app.use(function(req, res) {
+    res.redirect('/');
+});
+
+app.get('/', (req, res) => {
+    res.sendFile('index.html');
+});
+
+const server = http.createServer(app);
+
+server.listen(port);
 
 const parser = require('ua-parser-js');
 const { uniqueNamesGenerator, animals, colors } = require('unique-names-generator');
 
 class SnapdropServer {
-
-    constructor(port) {
+    constructor() {
         const WebSocket = require('ws');
-        this._wss = new WebSocket.Server({ port: port });
+        this._wss = new WebSocket.Server({ server });
         this._wss.on('connection', (socket, request) => this._onConnection(new Peer(socket, request)));
         this._wss.on('headers', (headers, response) => this._onHeaders(headers, response));
 
@@ -30,7 +79,6 @@ class SnapdropServer {
     _onConnection(peer) {
         this._joinRoom(peer);
         peer.socket.on('message', message => this._onMessage(peer, message));
-        peer.socket.on('error', console.error);
         this._keepAlive(peer);
 
         // send displayName
@@ -50,7 +98,7 @@ class SnapdropServer {
     }
 
     _onMessage(sender, message) {
-        // Try to parse message 
+        // Try to parse message
         try {
             message = JSON.parse(message);
         } catch (e) {
@@ -74,7 +122,6 @@ class SnapdropServer {
             // add sender id
             message.sender = sender.id;
             this._send(recipient, message);
-            return;
         }
     }
 
@@ -137,7 +184,7 @@ class SnapdropServer {
 
     _keepAlive(peer) {
         this._cancelKeepAlive(peer);
-        var timeout = 30000;
+        const timeout = 30000;
         if (!peer.lastBeat) {
             peer.lastBeat = Date.now();
         }
@@ -158,14 +205,10 @@ class SnapdropServer {
     }
 }
 
-
-
 class Peer {
-
     constructor(socket, request) {
         // set socket
         this.socket = socket;
-
 
         // set remote ip
         this._setIP(request);
@@ -174,7 +217,7 @@ class Peer {
         this._setPeerId(request)
         // is WebRTC supported ?
         this.rtcSupported = request.url.indexOf('webrtc') > -1;
-        // set name 
+        // set name
         this._setName(request);
         // for keepalive
         this.timerId = 0;
@@ -188,7 +231,7 @@ class Peer {
             this.ip = request.connection.remoteAddress;
         }
         // IPv4 and IPv6 use different values to refer to localhost
-        if (this.ip == '::1' || this.ip == '::ffff:127.0.0.1') {
+        if (this.ip === '::1' || this.ip === '::ffff:127.0.0.1') {
             this.ip = '127.0.0.1';
         }
     }
@@ -210,11 +253,11 @@ class Peer {
 
 
         let deviceName = '';
-        
+
         if (ua.os && ua.os.name) {
             deviceName = ua.os.name.replace('Mac OS', 'Mac') + ' ';
         }
-        
+
         if (ua.device.model) {
             deviceName += ua.device.model;
         } else {
@@ -253,7 +296,7 @@ class Peer {
     // return uuid of form xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
     static uuid() {
         let uuid = '',
-            ii;
+          ii;
         for (ii = 0; ii < 32; ii += 1) {
             switch (ii) {
                 case 8:
@@ -278,15 +321,15 @@ class Peer {
 }
 
 Object.defineProperty(String.prototype, 'hashCode', {
-  value: function() {
-    var hash = 0, i, chr;
-    for (i = 0; i < this.length; i++) {
-      chr   = this.charCodeAt(i);
-      hash  = ((hash << 5) - hash) + chr;
-      hash |= 0; // Convert to 32bit integer
+    value: function() {
+        let hash = 0, i, chr;
+        for (i = 0; i < this.length; i++) {
+            chr   = this.charCodeAt(i);
+            hash  = ((hash << 5) - hash) + chr;
+            hash |= 0; // Convert to 32bit integer
+        }
+        return hash;
     }
-    return hash;
-  }
 });
 
-const server = new SnapdropServer(process.env.PORT || 3000);
+new SnapdropServer();
