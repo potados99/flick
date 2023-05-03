@@ -736,6 +736,7 @@ body {
 x-title {
     width: 100%;
     background-color: var(--title-bar-bg-color);
+    transition: background-color 0.5s ease;
 
     -webkit-app-region: drag;
 }
