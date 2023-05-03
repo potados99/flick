@@ -9,7 +9,7 @@ window.iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 Events.on('display-name', e => {
     const me = e.detail.message;
     const $displayName = $('displayName')
-    $displayName.textContent = 'You are known as ' + me.displayName;
+    $displayName.textContent = '다른 사람에게 "' + me.displayName + '"로 표시되어요';
     $displayName.title = me.deviceName;
 });
 
@@ -74,7 +74,7 @@ class PeerUI {
 
     html() {
         return `
-            <label class="column center" title="Click to send files or right click to send a text">
+            <label class="column center" title="우클릭하면 메시지를 보낼 수 있어요">
                 <input type="file" multiple>
                 <x-icon shadow="1">
                     <svg class="icon"><use xlink:href="#"/></svg>
@@ -215,11 +215,19 @@ class Dialog {
 
     show() {
         this.$el.setAttribute('show', 1);
+
+        // Disable the drag overlay, making the body non-draggable.
+        document.getElementById('drag-overlay').style.display = 'none';
+
         if (this.$autoFocus) this.$autoFocus.focus();
     }
 
     hide() {
         this.$el.removeAttribute('show');
+
+        // Enable the overlay again, making the body draggable.
+        document.getElementById('drag-overlay').style.display = 'block';
+
         document.activeElement.blur();
         window.blur();
     }
@@ -305,7 +313,7 @@ class ReceiveDialog extends Dialog {
 
 
     _autoDownload(){
-        return !this.$el.querySelector('#autoDownload').checked
+        return this.$el.querySelector('#autoDownload').checked
     }
 }
 
@@ -375,7 +383,7 @@ class ReceiveTextDialog extends Dialog {
 
     async _onCopy() {
         await navigator.clipboard.writeText(this.$text.textContent);
-        Events.fire('notify-user', 'Copied to clipboard');
+        Events.fire('notify-user', '클립보드에 복사되었어요');
     }
 }
 
@@ -435,12 +443,12 @@ class Notifications {
         }
 
         // Notification is persistent on Android. We have to close it manually
-        const visibilitychangeHandler = () => {                             
-            if (document.visibilityState === 'visible') {    
+        const visibilitychangeHandler = () => {
+            if (document.visibilityState === 'visible') {
                 notification.close();
                 Events.off('visibilitychange', visibilitychangeHandler);
-            }                                                       
-        };                                                                                
+            }
+        };
         Events.on('visibilitychange', visibilitychangeHandler);
 
         return notification;
@@ -449,10 +457,10 @@ class Notifications {
     _messageNotification(message) {
         if (document.visibilityState !== 'visible') {
             if (isURL(message)) {
-                const notification = this._notify(message, 'Click to open link');
+                const notification = this._notify(message, '클릭해서 링크 열기');
                 this._bind(notification, e => window.open(message, '_blank', null, true));
             } else {
-                const notification = this._notify(message, 'Click to copy text');
+                const notification = this._notify(message, '클릭해서 복사하기');
                 this._bind(notification, e => this._copyText(message, notification));
             }
         }
@@ -460,7 +468,7 @@ class Notifications {
 
     _downloadNotification(message) {
         if (document.visibilityState !== 'visible') {
-            const notification = this._notify(message, 'Click to download');
+            const notification = this._notify(message, '클릭해서 다운로드');
             if (!window.isDownloadSupported) return;
             this._bind(notification, e => this._download(notification));
         }
@@ -474,7 +482,7 @@ class Notifications {
     _copyText(message, notification) {
         notification.close();
         if (!navigator.clipboard.writeText(message)) return;
-        this._notify('Copied text to clipboard');
+        this._notify('클립보드로 복사했어요');
     }
 
     _bind(notification, handler) {
@@ -498,11 +506,11 @@ class NetworkStatusUI {
     }
 
     _showOfflineMessage() {
-        Events.fire('notify-user', 'You are offline');
+        Events.fire('notify-user', '인터넷 연결이 오프라인이에요 :(');
     }
 
     _showOnlineMessage() {
-        Events.fire('notify-user', 'You are back online');
+        Events.fire('notify-user', '인터넷 연결이 돌아왔어요 :)');
     }
 }
 
@@ -516,7 +524,7 @@ class WebShareTargetUI {
         let shareTargetText = title ? title : '';
         shareTargetText += text ? shareTargetText ? ' ' + text : text : '';
 
-        if(url) shareTargetText = url; // We share only the Link - no text. Because link-only text becomes clickable.
+        if (url) shareTargetText = url; // We share only the Link - no text. Because link-only text becomes clickable.
 
         if (!shareTargetText) return;
         window.shareTargetText = shareTargetText;
@@ -570,7 +578,8 @@ window.addEventListener('beforeinstallprompt', e => {
 // Background Animation
 Events.on('load', () => {
     let c = document.createElement('canvas');
-    document.body.appendChild(c);
+    document.querySelector('x-wrapper').appendChild(c);
+    //document.body.appendChild(c);
     let style = c.style;
     style.width = '100%';
     style.position = 'absolute';
