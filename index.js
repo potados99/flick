@@ -62,13 +62,18 @@ const server = http.createServer(app);
 server.listen(port);
 
 const parser = require('ua-parser-js');
-const { uniqueNamesGenerator, animals, colors } = require('unique-names-generator');
+const fetch = require('node-fetch');
 
 class SnapdropServer {
     constructor() {
         const WebSocket = require('ws');
         this._wss = new WebSocket.Server({ server });
-        this._wss.on('connection', (socket, request) => this._onConnection(new Peer(socket, request)));
+        this._wss.on('connection', async (socket, request) => {
+            const peer = new Peer(socket, request);
+            await peer.getReady(request);
+
+            this._onConnection(peer)
+        });
         this._wss.on('headers', (headers, response) => this._onHeaders(headers, response));
 
         this._rooms = {};
@@ -217,11 +222,18 @@ class Peer {
         this._setPeerId(request)
         // is WebRTC supported ?
         this.rtcSupported = request.url.indexOf('webrtc') > -1;
-        // set name
-        this._setName(request);
+
+        // Method call for setting name is moved inside to getReady()
+        // because it  requires a network call.
+
         // for keepalive
         this.timerId = 0;
         this.lastBeat = Date.now();
+    }
+
+    async getReady(request) {
+        // set name
+        await this._setName(request);
     }
 
     _setIP(request) {
@@ -248,9 +260,8 @@ class Peer {
         return `<Peer id=${this.id} ip=${this.ip} rtcSupported=${this.rtcSupported}>`
     }
 
-    _setName(req) {
+    async _setName(req) {
         let ua = parser(req.headers['user-agent']);
-
 
         let deviceName = '';
 
@@ -267,13 +278,17 @@ class Peer {
         if(!deviceName)
             deviceName = 'Unknown Device';
 
-        const displayName = uniqueNamesGenerator({
+        /*const displayName = uniqueNamesGenerator({
             length: 2,
             separator: ' ',
             dictionaries: [colors, animals],
             style: 'capital',
             seed: this.id.hashCode()
-        })
+        })*/
+
+        const response = await fetch('https://nickname.hwanmoo.kr/?format=json&count=1&max_length=8');
+        const body = await response.json();
+        const displayName = body.words[0];
 
         this.name = {
             model: ua.device.model,
