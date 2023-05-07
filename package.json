@@ -1,6 +1,6 @@
 {
   "name": "snapdrop",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "[Snapdrop](https://snapdrop.net): local file sharing in your browser. Inspired by Apple's Airdrop.",
   "main": "index.js",
   "directories": {
