@@ -779,8 +779,10 @@ x-wrapper {
     background: rgba(127, 127, 127, 0.3);
 }
 #close-button:hover {
+    color: white;
     background: #E81123 !important;
 }
 #close-button:active {
+    color: white;
     background: #F1707A !important;
 }
