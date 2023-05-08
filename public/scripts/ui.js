@@ -9,7 +9,7 @@ window.iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 Events.on('display-name', e => {
   const me = e.detail.message;
   const $displayName = $('displayName')
-  $displayName.textContent = '다른 사람에게 "' + me.displayName + '"로 표시되어요';
+  $displayName.textContent = '다른 사람에게 "' + me.displayName + '"(으)로 표시되어요';
   $displayName.title = me.deviceName;
 });
 
