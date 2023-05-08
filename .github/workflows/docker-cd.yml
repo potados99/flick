@@ -18,7 +18,7 @@ jobs:
         id: docker_meta
         uses: docker/metadata-action@v3
         with:
-          images: ghcr.io/potados99/snapdrop
+          images: ghcr.io/potados99/flick
           # type=ref는 메인 브랜치 푸시용, type=semver는 태그 푸시용. 전자는 안 쓸 것이지만 써놓긴 함.
           tags: |
             type=ref,event=branch
