@@ -210,7 +210,7 @@ class Peer {
     this._reader = null;
     this._busy = false;
     this._dequeueFile();
-    Events.fire('notify-user', 'File transfer completed.');
+    Events.fire('notify-user', '파일이 수신되었어요.');
   }
 
   sendText(text) {
