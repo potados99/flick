@@ -1,6 +1,6 @@
 {
   "name": "flick",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "가장 빠른 파일 공유, 옆 PC로 [플릭]!",
   "main": "index.js",
   "directories": {
