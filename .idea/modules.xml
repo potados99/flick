@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/snapdrop.iml" filepath="$PROJECT_DIR$/.idea/snapdrop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/flick.iml" filepath="$PROJECT_DIR$/.idea/flick.iml" />
     </modules>
   </component>
 </project>
