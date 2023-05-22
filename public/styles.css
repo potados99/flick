@@ -703,7 +703,7 @@ x-dialog x-paper {
      * It has the same effect as setting -webkit-app-region: drag to body.
      */
     position: absolute;
-    top: 0;
+    top: 32px;
     left: 0;
     right: 0;
     bottom: 0;
@@ -782,4 +782,10 @@ x-wrapper {
 #close-button:active {
     color: white;
     background: #F1707A !important;
+}
+
+.bordered {
+    border: 1px solid black;
+    box-sizing: border-box;
+    border-radius: 12px;
 }
