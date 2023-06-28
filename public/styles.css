@@ -191,6 +191,7 @@ x-no-peers {
     animation: fade-in 300ms;
     animation-delay: 500ms;
     animation-fill-mode: backwards;
+    white-space: nowrap;
 }
 
 x-no-peers h2,
