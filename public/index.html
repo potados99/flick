@@ -45,12 +45,17 @@
         <div id="drag-overlay"></div>
 
         <header class="row-reverse">
-            <a href="#" id="theme" class="icon-button" title="Switch Darkmode/Lightmode" >
+            <a href="#about" class="icon-button" title="Flick">
+                <svg class="icon">
+                    <use xlink:href="#info-outline" />
+                </svg>
+            </a>
+            <a href="#" id="theme" class="icon-button" title="다크 모드" >
                 <svg class="icon">
                     <use xlink:href="#icon-theme" />
                 </svg>
             </a>
-            <a href="#" id="notification" class="icon-button" title="Enable Notifications" hidden>
+            <a href="#" id="notification" class="icon-button" title="알림 받기" hidden>
                 <svg class="icon">
                     <use xlink:href="#notifications" />
                 </svg>
@@ -135,6 +140,32 @@
         <div class="toast-container full center">
             <x-toast class="row" shadow="1" id="toast">파일이 전송되었어요</x-toast>
         </div>
+
+        <!-- About Page -->
+        <x-about id="about" class="full center column">
+            <section class="center column fade-in">
+                <header class="row-reverse" style="position: absolute; top: 0;">
+                    <a href="#" class="close icon-button">
+                        <svg class="icon">
+                            <use xlink:href="#close" />
+                        </svg>
+                    </a>
+                </header>
+                <svg class="icon logo">
+                    <use xlink:href="#wifi-tethering" />
+                </svg>
+                <h1>Flick</h1>
+                <div class="font-subheading">바로 옆 기기로 파일을 보내는 가장 빠른 방법</div>
+                <div class="row">
+                    <a class="icon-button" target="_blank" href="https://tumblbug.com/flick" title="텀블벅 바로가기" rel="noreferrer">
+                        <svg class="icon">
+                            <use xlink:href="#help-outline" />
+                        </svg>
+                    </a>
+                </div>
+            </section>
+            <x-background></x-background>
+        </x-about>
 
         <!-- SVG Icon Library -->
         <svg style="display: none;">
