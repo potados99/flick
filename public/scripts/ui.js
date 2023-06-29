@@ -419,7 +419,7 @@ class Notifications {
         Events.fire('notify-user', Notifications.PERMISSION_ERROR || 'Error');
         return;
       }
-      this._notify('Even more snappy sharing!');
+      this._notify('이제 알림을 받아볼 수 있어요!');
       this.$button.setAttribute('hidden', 1);
     });
   }

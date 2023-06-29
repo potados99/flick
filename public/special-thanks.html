@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" sizes="96x96" href="images/favicon-96x96.png">
+    <title>Flick</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#3367d6">
+    <meta name="color-scheme" content="dark light">
+    <meta name="apple-mobile-web-app-capable" content="no">
+    <meta name="apple-mobile-web-app-title" content="Flick">
+    <!-- Descriptions -->
+    <meta name="description" content="가장 빠른 파일 공유, 옆 PC로 [플릭]!">
+    <meta name="keywords" content="파일, 전송, 공유, P2P">
+    <!-- Icons -->
+    <link rel="icon" sizes="96x96" href="images/favicon-96x96.png">
+    <link rel="shortcut icon" href="images/favicon-96x96.png">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <meta name="msapplication-TileImage" content="images/mstile-150x150.png">
+    <link rel="fluid-icon" type="image/png" href="images/android-chrome-192x192.png">
+    <!-- Resources -->
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+
+    <script src="https://code.jquery.com/jquery-3.7.0.slim.min.js"></script>
+    <script src="scripts/starlight.js"></script>
+
+    <style>
+        .wrapper {
+            text-align: center;
+            max-width: 600px;
+            margin: 24px;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-content: start;
+        }
+
+        .column {
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .name {
+            margin: 4px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="dark-theme">
+
+<?xml version="1.0" encoding="utf-8"?>
+
+<div class="wrapper">
+    <h1>
+        감사합니다.
+    </h1>
+    <br>
+    <div>
+        Flick이 세상에 나올 수 있게 도움을 주신 모든 분께 감사의 말씀을 전합니다.
+        <br>
+        응원을 보내 주신 한 분, 한 분께 감사의 인사를 전하고 싶습니다.
+    </div>
+    <br>
+    <div class="container" id="names-row">
+        <!-- 스크립트에 의해 채워집니다 -->
+    </div>
+</div>
+<div style="position: absolute; width: 90%; height: 90%" class="starlight"></div>
+
+<script>
+  const names = [
+    '도기재',
+    'Bengi',
+    '노지현',
+    '모가나이트',
+    '조형빈',
+    '스네룽',
+    '범종혁',
+    'hihaa03',
+    '이하영',
+    '김수민',
+    'YJH',
+    '김수윤',
+    '오영지',
+    'Ryul',
+    '민서정',
+    '리리앙쥬',
+    '이승우',
+    '민주',
+    '오우진'
+  ];
+
+  function splitToNChunks(array, n) {
+    let result = [];
+    for (let i = n; i > 0; i--) {
+      result.push(array.splice(0, Math.ceil(array.length / i)));
+    }
+    return result;
+  }
+
+  const namesRow = document.querySelector('#names-row');
+
+  for (const chunk of splitToNChunks(names, 2)) {
+    const list = document.createElement('ul');
+
+    list.className = 'column';
+
+    for (const name of chunk) {
+      const item = document.createElement('li');
+      item.textContent = name;
+      item.className = 'name';
+      list.appendChild(item);
+    }
+
+    namesRow.appendChild(list);
+  }
+</script>
+
+</body>
+</html>

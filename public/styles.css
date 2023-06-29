@@ -551,6 +551,11 @@ button::-moz-focus-inner {
     margin: 8px 8px -16px;
 }
 
+#about section header {
+    position: absolute;
+    top: 0;
+}
+
 /* Loading Indicator */
 
 .progress {
